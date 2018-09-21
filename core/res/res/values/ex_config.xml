@@ -57,4 +57,7 @@
 
     <!-- Defines custom OEM sensor for pocket detection. -->
     <string name="config_pocketJudgeVendorSensorName"></string>
+
+    <!-- True if the home button has the ability to wake up phone from lockscreen-->
+    <bool name="config_HomeWakeButton">false</bool>
 </resources>
