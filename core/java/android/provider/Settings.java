@@ -5806,6 +5806,9 @@ public final class Settings {
          */
         public static final String CHARGING_ANIMATION = "charging_animation";
 
+        /** @hide */
+        public static final String BACK_GESTURE_HEIGHT = "back_gesture_height";
+
         /**
          * Battery style
          * @hide
