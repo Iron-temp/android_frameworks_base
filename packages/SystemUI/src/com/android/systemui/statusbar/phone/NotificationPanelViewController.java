@@ -1331,7 +1331,7 @@ public class NotificationPanelViewController extends PanelViewController {
                 .getVisibleNotificationCount() != 0 || mMediaDataManager.hasActiveMedia();
         if (!hasVisibleNotifications) {
             Settings.System.putIntForUser(mView.getContext().getContentResolver(),
-                     Settings.System.AMBIENT_NOTIFICATION_LIGHT, 0,
+                     Settings.System.AOD_NOTIFICATION_PULSE_TRIGGER, 0,
                      UserHandle.USER_CURRENT);
         }
         mKeyguardStatusViewController.setHasVisibleNotifications(hasVisibleNotifications);
@@ -3722,7 +3722,7 @@ public class NotificationPanelViewController extends PanelViewController {
 
     private void updatePulseLightState(boolean dozing) {
         boolean mAmbientLights = Settings.System.getIntForUser(
-                mView.getContext().getContentResolver(), Settings.System.AMBIENT_NOTIFICATION_LIGHT_ENABLED,
+                mView.getContext().getContentResolver(), Settings.System.AOD_NOTIFICATION_PULSE,
                 0, UserHandle.USER_CURRENT) != 0;
         if (DEBUG_PULSE_LIGHT) {
             Log.d(TAG, "updatePulseLightState dozing = " + dozing + " mAmbientLights = "  + mAmbientLights);
@@ -3738,7 +3738,7 @@ public class NotificationPanelViewController extends PanelViewController {
                 // screen on!
                 mPulseLightsView.setVisibility(View.GONE);
                 Settings.System.putIntForUser(mView.getContext().getContentResolver(),
-                         Settings.System.AMBIENT_NOTIFICATION_LIGHT, 0,
+                         Settings.System.AOD_NOTIFICATION_PULSE_TRIGGER, 0,
                          UserHandle.USER_CURRENT);
                 mPulseLightHandled = true;
             }
@@ -3751,10 +3751,10 @@ public class NotificationPanelViewController extends PanelViewController {
                 animatePulse =
                 !mDozeParameters.getDisplayNeedsBlanking() && mDozeParameters.getAlwaysOn();
         boolean pulseLights = Settings.System.getIntForUser(
-                mView.getContext().getContentResolver(), Settings.System.PULSE_AMBIENT_LIGHT,
+                mView.getContext().getContentResolver(), Settings.System.NOTIFICATION_PULSE,
                 0, UserHandle.USER_CURRENT) != 0;
         boolean ambientLights = Settings.System.getIntForUser(
-                mView.getContext().getContentResolver(), Settings.System.AMBIENT_NOTIFICATION_LIGHT_ENABLED,
+                mView.getContext().getContentResolver(), Settings.System.AOD_NOTIFICATION_PULSE,
                 0, UserHandle.USER_CURRENT) != 0;
         boolean activeNotif = mNotificationStackScroller.hasActiveClearableNotifications(ROWS_ALL);
         int pulseReason = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
@@ -3791,7 +3791,7 @@ public class NotificationPanelViewController extends PanelViewController {
                         // tell power manager that we want to enable aod
                         // must do that here already not on pulsing = false
                         Settings.System.putIntForUser(mView.getContext().getContentResolver(),
-                                Settings.System.AMBIENT_NOTIFICATION_LIGHT, 1,
+                                Settings.System.AOD_NOTIFICATION_PULSE_TRIGGER, 1,
                                 UserHandle.USER_CURRENT);
                     }
                 }
@@ -3805,7 +3805,7 @@ public class NotificationPanelViewController extends PanelViewController {
                     // no active notifications or just pulse without aod - so no reason to continue
                     mPulseLightsView.setVisibility(View.GONE);
                     Settings.System.putIntForUser(mView.getContext().getContentResolver(),
-                            Settings.System.AMBIENT_NOTIFICATION_LIGHT, 0,
+                            Settings.System.AOD_NOTIFICATION_PULSE_TRIGGE, 0,
                             UserHandle.USER_CURRENT);
                 }
             }
