@@ -7435,5 +7435,10 @@ message MetricsEvent {
     // ---- End Q Constants, all Q constants go above this line ----
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
+
+    // Iron
+    IRON = 1999;
+    IRON_SETTINGS = 2000;
+    IRON_QS_TILES = 2001;
   }
 }
