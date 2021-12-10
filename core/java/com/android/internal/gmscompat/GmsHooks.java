@@ -207,8 +207,6 @@ public final class GmsHooks {
             }
 
             GmsDynamiteHooks.initGmsServerApp(app);
-        } else if (GmsCompat.isDynamiteClient()) {
-            GmsDynamiteHooks.initClientApp();
         }
     }
 

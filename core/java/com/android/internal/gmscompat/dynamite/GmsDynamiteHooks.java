@@ -32,7 +32,6 @@ import com.android.internal.gmscompat.dynamite.client.DynamiteContext;
 import com.android.internal.gmscompat.dynamite.server.FileProxyProvider;
 
 import dalvik.system.DelegateLastClassLoader;
-import dalvik.system.DexPathList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,13 +64,6 @@ public final class GmsDynamiteHooks {
         return clientContext;
     }
 
-    public static void initClientApp() {
-        // Install hooks (requires libcore changes)
-        DexPathList.postConstructorBufferHook = GmsDynamiteHooks::getDexPathListBuffers;
-        File.lastModifiedHook = GmsDynamiteHooks::getFileLastModified;
-        DelegateLastClassLoader.librarySearchPathHook = GmsDynamiteHooks::mapRemoteLibraryPaths;
-    }
-
     public static void initGmsServerApp(Application app) {
         // Main GMS process only, to avoid serving proxy requests multiple times.
         // This is specifically the main process, not persistent, because
@@ -97,31 +89,6 @@ public final class GmsDynamiteHooks {
 
         Log.d(DynamiteContext.TAG, "Replacing " + path + " -> fd " + state.moduleFd.getInt$());
         return ApkAssets.loadFromFd(state.moduleFd, path, flags, null);
-    }
-
-    // For Java code
-    // DexPathList(ClassLoader, String, String, File, boolean)
-    private static ByteBuffer[] getDexPathListBuffers(DexPathList pathList) {
-        if (!GmsCompat.isDynamiteClient()) {
-            return null;
-        }
-
-        ModuleLoadState state = getClientContext().getState();
-        if (state == null) {
-            return null;
-        }
-
-        ByteBuffer[] buffers;
-        try {
-            buffers = state.mapDexBuffers();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        Log.d(DynamiteContext.TAG, "Creating class loader with " + buffers.length + " dex buffer(s)");
-
-        // Undo path init and re-initialize with the ByteBuffers
-        return buffers;
     }
 
     // To fix false-positive "Module APK has been modified" check
@@ -178,11 +145,6 @@ public final class GmsDynamiteHooks {
             if (srcPfd == null) {
                 throw new RuntimeException(new FileNotFoundException(path));
             }
-
-            // For ApkAssets, DexPathList, File#lastModified()
-            Log.d(DynamiteContext.TAG, "Received remote fd: " + path + " -> " + srcPfd.getFd());
-            ModuleLoadState state = new ModuleLoadState(path, srcPfd.getFileDescriptor());
-            getClientContext().setState(state);
 
             // Native code dups the fd each time it loads a lib
             String fdPath = "/proc/self/fd/" + srcPfd.getFd();
