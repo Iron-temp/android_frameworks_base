@@ -18,7 +18,7 @@
     <!-- Button that copies the url to the log of a crashed application -->
     <string name="aerr_copy">Copy crash log URL</string>
     <string name="url_copy_success">URL copied successfully</string>
-    <string name="url_copy_failed">An error occured while uploading the log to KatBin</string>
+    <string name="url_copy_failed">An error occured while uploading the log to Hastebin</string>
 
     <!-- Advenced reboot -->
     <string name="reboot_to_recovery_title" translatable="false">Recovery</string>
@@ -35,4 +35,5 @@
     <string name="pocket_view_top_tag_cancel2">Long press the power button to force quit pocket mode.</string>
     <string name="pocket_view_top_tag_number1" translatable="false">1.\u0020</string>
     <string name="pocket_view_top_tag_number2" translatable="false">2.\u0020</string>
+
 </resources>
