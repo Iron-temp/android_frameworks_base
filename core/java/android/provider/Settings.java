@@ -6120,6 +6120,13 @@ public final class Settings {
          * @hide
          */
         public static final String UDFPS_HAPTIC_FEEDBACK = "udfps_haptic_feedback";
+		
+		/**
+         * Whether to force small clock on keyguard
+         * @hide
+         */
+        @Readable
+        public static final String LOCKSCREEN_SMALL_CLOCK = "lockscreen_small_clock";
 
         /**
          * These are all public system settings
