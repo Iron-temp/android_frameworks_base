@@ -377,12 +377,6 @@ public class NavigationBarView extends FrameLayout implements
         }
     }
 
-    @Override
-    protected boolean onSetAlpha(int alpha) {
-        Log.e(TAG, "onSetAlpha", new Throwable());
-        return super.onSetAlpha(alpha);
-    }
-
     public void setAutoHideController(AutoHideController autoHideController) {
         mAutoHideController = autoHideController;
     }
