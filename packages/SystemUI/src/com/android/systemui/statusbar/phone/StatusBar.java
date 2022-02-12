@@ -4768,8 +4768,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         boolean launchingAffordanceWithPreview =
                 mNotificationPanelViewController.isLaunchingAffordanceWithPreview();
-        mScrimController.setLaunchingAffordanceWithPreview(true
-                || mBiometricUnlockController.isWakeAndUnlock());
+        mScrimController.setLaunchingAffordanceWithPreview(true);
 
         if (mStatusBarKeyguardViewManager.isShowingAlternateAuth()) {
             mScrimController.transitionTo(ScrimState.AUTH_SCRIMMED);
