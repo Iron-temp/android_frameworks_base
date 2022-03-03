@@ -33,6 +33,7 @@ import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.hardware.display.AmbientDisplayConfiguration;
 import android.hardware.display.DisplayManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
@@ -123,6 +124,7 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
     @NonNull private final StatusBarKeyguardViewManager mKeyguardViewManager;
     @NonNull private final DumpManager mDumpManager;
     @NonNull private final KeyguardUpdateMonitor mKeyguardUpdateMonitor;
+    @NonNull private final Handler mMainHandler;
     @Nullable private final Vibrator mVibrator;
     @NonNull private final FalsingManager mFalsingManager;
     @NonNull private final PowerManager mPowerManager;
@@ -167,11 +169,12 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
     private boolean mOnFingerDown;
     private boolean mAttemptedToDismissKeyguard;
     private final int mUdfpsVendorCode;
+    private Set<Callback> mCallbacks = new HashSet<>();
+
+    private UdfpsAnimation mUdfpsAnimation;
+    private final AmbientDisplayConfiguration mAmbientDisplayConfiguration;
     private final SystemSettings mSystemSettings;
     private boolean mScreenOffFod;
-
-    private Set<Callback> mCallbacks = new HashSet<>();
-    private UdfpsAnimation mUdfpsAnimation;
 
     @VisibleForTesting
     public static final AudioAttributes VIBRATION_SONIFICATION_ATTRIBUTES =
@@ -325,10 +328,10 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
         @Override
         public void onAcquired(int sensorId, int acquiredInfo, int vendorCode) {
             mFgExecutor.execute(() -> {
-                final boolean isDozing = mStatusBarStateController.isDozing() || !mScreenOn;
-                if (acquiredInfo == 6 && vendorCode == mUdfpsVendorCode) {;
-                    if ((mScreenOffFod && isDozing) /** Screen off and dozing */ ||
-                            (mKeyguardUpdateMonitor.isDreaming() && mScreenOn) /** AOD or pulse */) {
+                final boolean isAodEnabled = mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT);
+                final boolean isShowingAmbientDisplay = mStatusBarStateController.isDozing() && mScreenOn;
+                if (acquiredInfo == 6 && ((mScreenOffFod && !mScreenOn) || (isAodEnabled && isShowingAmbientDisplay))) {
+                    if (vendorCode == mUdfpsVendorCode) {
                         mPowerManager.wakeUp(mSystemClock.uptimeMillis(),
                                 PowerManager.WAKE_REASON_GESTURE, TAG);
                         onAodInterrupt(0, 0, 0, 0); // To-Do pass proper values
@@ -556,7 +559,6 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
             @NonNull LockscreenShadeTransitionController lockscreenShadeTransitionController,
             @NonNull ScreenLifecycle screenLifecycle,
             @Nullable Vibrator vibrator,
-            @NonNull Handler mMainHandler,
             @NonNull UdfpsHapticsSimulator udfpsHapticsSimulator,
             @NonNull Optional<UdfpsHbmProvider> hbmProvider,
             @NonNull KeyguardStateController keyguardStateController,
@@ -627,10 +629,12 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
 
         udfpsHapticsSimulator.setUdfpsController(this);
 
-        mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfps_vendor_code);
         if (IRONUtils.isPackageInstalled(mContext, "com.iron.udfps.resources")) {
             mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps);
         }
+
+        mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfps_vendor_code);
+        mAmbientDisplayConfiguration = new AmbientDisplayConfiguration(mContext);
         mSystemSettings = systemSettings;
         updateScreenOffFodState();
         mSystemSettings.registerContentObserver(Settings.System.SCREEN_OFF_FOD,

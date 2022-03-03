@@ -36,8 +36,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import com.android.internal.util.iron.IRONUtils;
-
 import com.android.settingslib.Utils;
 import com.android.systemui.R;
 import com.android.systemui.animation.Interpolators;
@@ -126,15 +124,15 @@ public class UdfpsKeyguardView extends UdfpsAnimationView {
     private void updateIcon() {
         mCustomUdfpsIcon = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.UDFPS_ICON, 0) != 0
-                && IRONUtils.isPackageInstalled(mContext, "com.iron.udfps.resources");
+                && com.android.internal.util.iron.IRONUtils.isPackageInstalled(mContext,
+                "com.iron.udfps.resources");
         mCustomFpIconEnabled = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.OMNI_CUSTOM_FP_ICON_ENABLED, 0) == 1;
         customIconURI = Settings.System.getStringForUser(getContext().getContentResolver(),
                 Settings.System.OMNI_CUSTOM_FP_ICON,
                 UserHandle.USER_CURRENT);
 
-        mBgProtection.setImageDrawable(mCustomUdfpsIcon ||
-                                      (!TextUtils.isEmpty(customIconURI) && mCustomFpIconEnabled)
+        mBgProtection.setImageDrawable(mCustomUdfpsIcon
                 ? mFingerprintDrawable :
                 getContext().getDrawable(R.drawable.fingerprint_bg));
     }

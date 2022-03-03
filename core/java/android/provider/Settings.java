@@ -5894,21 +5894,6 @@ public final class Settings {
         /**
          * @hide
          */
-        public static final String UDFPS_ANIM = "udfps_anim";
-
-        /**
-         * @hide
-         */
-        public static final String UDFPS_ANIM_STYLE = "udfps_anim_style";
-
-        /**
-         * @hide
-         */
-        public static final String UDFPS_ICON = "udfps_icon";
-
-        /**
-         * @hide
-         */
         public static final String OMNI_CUSTOM_FP_ICON_ENABLED = "custom_fp_icon_enabled";
 
         /**
@@ -6073,6 +6058,29 @@ public final class Settings {
         public static final String OMNI_QS_TILE_VERTICAL_LAYOUT = "qs_tile_vertical_layout";
 
         /**
+         * @hide
+         */
+        public static final String UDFPS_ANIM = "udfps_anim";
+
+        /**
+         * @hide
+         */
+        public static final String UDFPS_ANIM_STYLE = "udfps_anim_style";
+
+        /**
+         * @hide
+         */
+        public static final String UDFPS_ICON = "udfps_icon";
+
+        /**
+         * Enable fod detection even when screen is off
+         * Default value is 0
+         * @hide
+         */
+        @Readable
+        public static final String SCREEN_OFF_FOD = "screen_off_fod";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -6126,15 +6134,6 @@ public final class Settings {
          * @hide
          */
         public static final String PULSE_ON_NEW_TRACKS = "pulse_on_new_tracks";
-		
-		
-		/**
-         * Enable fod detection even when screen is off
-         * Default value is 0
-         * @hide
-         */
-        @Readable
-        public static final String SCREEN_OFF_FOD = "screen_off_fod";
 		
 		/**
          * Whether to play haptic feedback when touching udfps icon
